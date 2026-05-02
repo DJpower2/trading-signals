@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trading Signal Übersicht — Crypto Wall Street & Andrei Jikh</title>
+<meta name="description" content="Aktuelle Trading-Signale und Makro-Analyse aus YouTube-Videos von Crypto Wall Street und Andrei Jikh. Stand: 02. Mai 2026.">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f0f2f5;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --text: #1a202c;
+    --text-muted: #64748b;
+    --accent: #3b82f6;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --green-border: #bbf7d0;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+    --red-border: #fecaca;
+    --yellow: #d97706;
+    --yellow-bg: #fef3c7;
+    --yellow-border: #fde68a;
+    --orange: #ea580c;
+    --orange-bg: #ffedd5;
+    --purple: #7c3aed;
+    --purple-bg: #ede9fe;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+    --shadow-lg: 0 4px 6px rgba(0,0,0,0.05), 0 10px 30px rgba(0,0,0,0.08);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 13px; line-height: 1.6; }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0c1445 0%, #1a3a6b 60%, #1e4d8c 100%);
+    color: white; padding: 18px 24px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .header-icon { width: 42px; height: 42px; background: rgba(59,130,246,0.25); border: 1px solid rgba(59,130,246,0.4); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .header-title { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+  .header-sub { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+  .header-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .header-stat { text-align: center; }
+  .header-stat-val { font-size: 18px; font-weight: 800; line-height: 1; }
+  .header-stat-label { font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.6px; margin-top: 2px; }
+  .header-divider { width: 1px; height: 32px; background: rgba(255,255,255,0.15); }
+
+  /* MAIN */
+  .main { padding: 20px 24px; max-width: 1140px; margin: 0 auto; }
+
+  /* TOP BAR */
+  .top-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+  .update-info { display: flex; align-items: center; gap: 8px; }
+  .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 0 0 rgba(34,197,94,0.4); animation: pulse-ring 2s infinite; }
+  @keyframes pulse-ring { 0%{box-shadow:0 0 0 0 rgba(34,197,94,0.4)} 70%{box-shadow:0 0 0 8px rgba(34,197,94,0)} 100%{box-shadow:0 0 0 0 rgba(34,197,94,0)} }
+  .update-text { font-size: 12px; color: var(--text-muted); }
+  .stand-badge {
+    background: #1e3a5f;
+    color: #93c5fd;
+    border: 1px solid #2563eb44;
+    border-radius: var(--radius-sm);
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex; align-items: center; gap: 7px;
+  }
+
+  /* ALERT BANNER */
+  .alert-banner {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 1px solid #f59e0b;
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 12px; color: #92400e; line-height: 1.5;
+  }
+  .alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .alert-title { font-weight: 700; margin-bottom: 2px; }
+
+  /* SIGNAL PILLS ROW */
+  .pills-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .pill { display: flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 100px; font-size: 11px; font-weight: 700; border: 1px solid transparent; }
+  .pill-short { background: var(--red-bg); color: var(--red); border-color: var(--red-border); }
+  .pill-long { background: var(--green-bg); color: var(--green); border-color: var(--green-border); }
+  .pill-watch { background: var(--yellow-bg); color: var(--yellow); border-color: var(--yellow-border); }
+  .pill-macro { background: var(--orange-bg); color: var(--orange); border-color: #fed7aa; }
+  .pill-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+  /* CHANNEL GRID */
+  .channels-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-bottom: 20px; }
+  .channel-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .channel-card-header { padding: 13px 16px; display: flex; align-items: center; gap: 11px; border-bottom: 1px solid var(--border); }
+  .channel-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: white; flex-shrink: 0; }
+  .av-cws { background: linear-gradient(135deg, #1e3a5f, #3b82f6); }
+  .av-aj { background: linear-gradient(135deg, #7c2d12, #ef4444); }
+  .channel-info { flex: 1; min-width: 0; }
+  .channel-name { font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .channel-handle { font-size: 11px; color: var(--text-muted); }
+  .channel-badge { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 100px; white-space: nowrap; flex-shrink: 0; }
+  .badge-bear { background: var(--red-bg); color: var(--red); }
+  .badge-macro { background: var(--orange-bg); color: var(--orange); }
+  .channel-card-body { padding: 14px 16px; }
+  .video-title { font-size: 13px; font-weight: 600; line-height: 1.4; margin-bottom: 4px; }
+  .video-meta { font-size: 11px; color: var(--text-muted); display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .summary-text { font-size: 12px; color: #475569; line-height: 1.6; padding: 9px 11px; background: #f8fafc; border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; margin-bottom: 12px; }
+  .levels-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); margin-bottom: 5px; }
+  .levels-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+  .lchip { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 5px; }
+  .lchip-res { background: #fff1f2; color: var(--red); border: 1px solid var(--red-border); }
+  .lchip-sup { background: #f0fdf4; color: var(--green); border: 1px solid var(--green-border); }
+  .lchip-key { background: #eff6ff; color: var(--accent); border: 1px solid #bfdbfe; }
+  .lchip-warn { background: var(--orange-bg); color: var(--orange); border: 1px solid #fed7aa; }
+
+  /* MAIN SIGNAL TABLE */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 18px; overflow: hidden; }
+  .card-header { padding: 13px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .card-title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 7px; }
+  .card-sub { font-size: 11px; color: var(--text-muted); }
+  table.stbl { width: 100%; border-collapse: collapse; }
+  table.stbl th { background: #f8fafc; padding: 7px 12px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+  table.stbl td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+  table.stbl tr:last-child td { border-bottom: none; }
+  table.stbl tr:hover td { background: #fafbfc; }
+  .dir-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 5px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+  .dir-short { background: var(--red-bg); color: var(--red); }
+  .dir-long { background: var(--green-bg); color: var(--green); }
+  .dir-watch { background: var(--yellow-bg); color: var(--yellow); }
+  .asset-name { font-weight: 700; font-size: 13px; }
+  .mono { font-family: 'SF Mono','Fira Code',monospace; font-size: 12px; }
+  .na { color: #cbd5e1; }
+  .conf-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; }
+  .conf-high { background: var(--green); }
+  .conf-mid { background: var(--yellow); }
+  .conf-low { background: #94a3b8; }
+  .src-tag { font-size: 10px; padding: 2px 7px; border-radius: 4px; background: var(--bg); border: 1px solid var(--border); color: var(--text-muted); white-space: nowrap; }
+  .status-chip { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; margin-left: 4px; }
+  .status-active { background: #dcfce7; color: #15803d; }
+  .status-build { background: #dbeafe; color: #1d4ed8; }
+  .status-be { background: var(--yellow-bg); color: var(--yellow); }
+
+  /* TWO-COL GRID */
+  .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 18px; }
+
+  /* MACRO CARD */
+  .macro-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); padding: 14px 16px; gap: 14px; }
+  .macro-item .m-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 3px; }
+  .macro-item .m-val { font-size: 16px; font-weight: 800; font-family: 'SF Mono','Fira Code',monospace; }
+  .macro-item .m-note { font-size: 11px; margin-top: 2px; }
+  .m-red { color: var(--red); }
+  .m-green { color: var(--green); }
+  .m-yellow { color: var(--yellow); }
+  .m-orange { color: var(--orange); }
+
+  /* OIL CRISIS CARD */
+  .oil-crisis { padding: 14px 16px; }
+  .crisis-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+  .crisis-row:last-child { border-bottom: none; }
+  .crisis-icon { font-size: 18px; flex-shrink: 0; width: 28px; text-align: center; }
+  .crisis-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+  .crisis-val { font-size: 13px; font-weight: 600; margin-top: 1px; }
+  .crisis-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+  /* CONSENSUS */
+  .consensus-row { display: flex; flex-wrap: wrap; gap: 1px; background: var(--border); }
+  .consensus-cell { background: var(--card); padding: 12px 14px; flex: 1; min-width: 80px; text-align: center; }
+  .cons-asset { font-size: 11px; font-weight: 700; margin-bottom: 5px; }
+  .cons-badge { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 100px; display: inline-block; }
+
+  /* WATCH LIST */
+  .watch-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; padding: 14px 16px; }
+  .watch-item { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; }
+  .watch-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .watch-asset { font-weight: 700; font-size: 13px; }
+  .watch-trigger { font-size: 11px; color: #475569; line-height: 1.4; }
+  .watch-source { font-size: 10px; color: var(--accent); margin-top: 5px; font-weight: 600; }
+
+  /* DISCLAIMER */
+  .disclaimer { font-size: 11px; color: var(--text-muted); background: var(--yellow-bg); border: 1px solid var(--yellow-border); border-radius: var(--radius-sm); padding: 9px 13px; margin-top: 4px; display: flex; gap: 8px; line-height: 1.5; }
+
+  /* FOOTER */
+  .footer { text-align: center; padding: 24px; font-size: 11px; color: #94a3b8; border-top: 1px solid var(--border); margin-top: 8px; background: white; }
+  .footer a { color: var(--accent); text-decoration: none; }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px; color: var(--text-muted); margin-bottom: 10px; }
+
+  @media (max-width: 600px) {
+    .header { padding: 14px 16px; }
+    .main { padding: 14px 16px; }
+    table.stbl th:nth-child(4), table.stbl td:nth-child(4),
+    table.stbl th:nth-child(5), table.stbl td:nth-child(5) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-icon">📡</div>
+    <div>
+      <div class="header-title">Trading Signal Übersicht</div>
+      <div class="header-sub">Crypto Wall Street · Andrei Jikh — Aktualisiert 02. Mai 2026</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="header-stat">
+      <div class="header-stat-val" style="color:#f87171">5</div>
+      <div class="header-stat-label">Aktive Shorts</div>
+    </div>
+    <div class="header-divider"></div>
+    <div class="header-stat">
+      <div class="header-stat-val" style="color:#86efac">1</div>
+      <div class="header-stat-label">Aktive Longs</div>
+    </div>
+    <div class="header-divider"></div>
+    <div class="header-stat">
+      <div class="header-stat-val" style="color:#fde68a">4</div>
+      <div class="header-stat-label">Watchlist</div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="update-info">
+      <div class="pulse-dot"></div>
+      <div class="update-text">Letzte Analyse: <strong>02.05.2026</strong> — CWS (02.05) + Andrei Jikh (20.04) analysiert</div>
+    </div>
+    <div class="stand-badge">
+      📅 Stand: 02. Mai 2026
+    </div>
+  </div>
+
+  <!-- OIL ALERT -->
+  <div class="alert-banner">
+    <span class="alert-icon">🛢️</span>
+    <div>
+      <div class="alert-title">Makro-Warnung: Öl-Schock (Andrei Jikh, 20.04.2026)</div>
+      Strait of Hormuz geschlossen seit Feb 2026 — 15–20% des Weltöls fehlt. JP Morgan: Pre-Closure-Puffer aufgebraucht ~20. April. Paper-Preis ($100) vs. physischer Preis ($130–160+). Historisch: solche Krisen führten zu −21% bis −52% am Aktienmarkt. Consumer Sentiment auf Mehrjahrestief während S&P 500 nahe ATH.
+    </div>
+  </div>
+
+  <!-- PILLS -->
+  <div class="pills-row">
+    <div class="pill pill-short"><div class="pill-dot"></div>BTC SHORT aufgebaut bis 85k</div>
+    <div class="pill pill-short"><div class="pill-dot"></div>ETH SHORT (BE gesichert)</div>
+    <div class="pill pill-short"><div class="pill-dot"></div>SOL SHORT (BE gesichert)</div>
+    <div class="pill pill-short"><div class="pill-dot"></div>Silver SHORT aktiv</div>
+    <div class="pill pill-watch"><div class="pill-dot"></div>BTC Akkumulation 54–59k geplant</div>
+    <div class="pill pill-macro"><div class="pill-dot"></div>Öl Short-Squeeze droht</div>
+  </div>
+
+  <!-- CHANNEL CARDS -->
+  <div class="channels-grid">
+
+    <!-- CWS -->
+    <div class="channel-card">
+      <div class="channel-card-header">
+        <div class="channel-avatar av-cws">₿</div>
+        <div class="channel-info">
+          <div class="channel-name">Crypto Wall Street</div>
+          <div class="channel-handle">@cryptowallstreet · DE · 25 Min</div>
+        </div>
+        <div class="channel-badge badge-bear">🔴 Bearish</div>
+      </div>
+      <div class="channel-card-body">
+        <div class="video-title">Bitcoin: Dieser Bereich entscheidet jetzt alles - zu spät für die meisten!</div>
+        <div class="video-meta">
+          <span>📅 02.05.2026</span>
+          <span><a href="https://youtube.com/watch?v=ta3wzBWBGew" target="_blank" rel="noopener">▶ Video öffnen</a></span>
+        </div>
+        <div class="summary-text">BTC an entscheidender Zone: Short-Term Holder Cost Basis bei 78.700$ — in jedem Bärenmarkt war das Widerstand. 50W EMA bei 85.900 = ultimative Grenze. Swing Shorts auf BTC, ETH, SOL aktiv. Bärenmarkt-Ende erwartet Ende 2026. Nächste Spot-Akkumulation: 59.200–54.000$.</div>
+        <div class="levels-label">BTC Schlüsselzonen</div>
+        <div class="levels-row">
+          <span class="lchip lchip-key">⚡ STH-CB: 78.700$</span>
+          <span class="lchip lchip-res">R: 79.485$</span>
+          <span class="lchip lchip-res">R: 84.000$ (200D SMA)</span>
+          <span class="lchip lchip-warn">MAX: 85.000–85.900$</span>
+          <span class="lchip lchip-sup">S/Kauf: 59.200–54.000$</span>
+          <span class="lchip lchip-sup">LTH-CB: 48.000$</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Andrei Jikh -->
+    <div class="channel-card">
+      <div class="channel-card-header">
+        <div class="channel-avatar av-aj">🛢</div>
+        <div class="channel-info">
+          <div class="channel-name">Andrei Jikh</div>
+          <div class="channel-handle">@AndreiJikh · EN · 25 Min</div>
+        </div>
+        <div class="channel-badge badge-macro">🟠 Makro</div>
+      </div>
+      <div class="channel-card-body">
+        <div class="video-title">The Oil Shock Is About To Hit America</div>
+        <div class="video-meta">
+          <span>📅 20.04.2026</span>
+          <span><a href="https://youtube.com/watch?v=f353QO5Dgus" target="_blank" rel="noopener">▶ Video öffnen</a></span>
+        </div>
+        <div class="summary-text">Größte Öl-Versorgungskrise der Geschichte. Paper-Öl ($100) vs. Physisch ($130–160+) = historischer Spread. JP Morgan: Puffer aufgebraucht ~20. April → Short-Squeeze droht. US 10-Year bei 4,3% (Gefahrenzone: 4,6–4,8%). China: erstmals niedrigere Yields als USA/EU/Japan → neuer Safe Haven.</div>
+        <div class="levels-label">Makro-Schlüssellevels</div>
+        <div class="levels-row">
+          <span class="lchip lchip-warn">Öl Paper: ~100$/bbl</span>
+          <span class="lchip lchip-res">Öl Physisch: 130–160$</span>
+          <span class="lchip lchip-key">US 10Y: 4,3%</span>
+          <span class="lchip lchip-warn">Gefahr: 4,6–4,8%</span>
+          <span class="lchip lchip-sup">China-Bonds: ↓ (Safe Haven)</span>
+          <span class="lchip lchip-res">S&P 500: ATH-Nähe = Blasenrisiko</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVE SIGNALS -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">🎯 Aktive Handelssignale</div>
+      <div class="card-sub">Konkrete Setups aus den Analysen</div>
+    </div>
+    <table class="stbl">
+      <thead>
+        <tr>
+          <th>#</th><th>Asset</th><th>Richtung</th><th>Entry</th><th>Stoploss</th><th>Take Profit</th><th>Zeitrahmen</th><th>Konfidenz</th><th>Quelle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="na">1</td>
+          <td><span class="asset-name">BTC</span></td>
+          <td><span class="dir-badge dir-short">▼ SHORT</span><span class="status-chip status-build">aufgebaut</span></td>
+          <td class="mono">78.700–85.000$<br><span style="font-size:10px;color:var(--text-muted)">Skalierung bis TWB</span></td>
+          <td class="mono" style="color:var(--red)">Über 85.500$</td>
+          <td class="mono" style="color:var(--green)">65.000$ → 54.000$</td>
+          <td>Wochen–Monate</td>
+          <td><span class="conf-dot conf-high"></span>Hoch</td>
+          <td><span class="src-tag">CWS</span></td>
+        </tr>
+        <tr>
+          <td class="na">2</td>
+          <td><span class="asset-name">ETH</span></td>
+          <td><span class="dir-badge dir-short">▼ SHORT</span><span class="status-chip status-be">BE gesichert</span></td>
+          <td class="mono">~2.278$<br><span style="font-size:10px;color:var(--text-muted)">gestrig eröffnet</span></td>
+          <td class="mono" style="color:var(--yellow)">2.278$ (BE)</td>
+          <td class="mono" style="color:var(--green)">2.180 → 2.127$</td>
+          <td>Wochen</td>
+          <td><span class="conf-dot conf-mid"></span>Mittel</td>
+          <td><span class="src-tag">CWS</span></td>
+        </tr>
+        <tr>
+          <td class="na">3</td>
+          <td><span class="asset-name">ETH</span></td>
+          <td><span class="dir-badge dir-short">▼ SHORT</span><span class="status-chip status-build">re-entry</span></td>
+          <td class="mono">2.334–2.346$<br><span style="font-size:10px;color:var(--text-muted)">559/618er Fib</span></td>
+          <td class="mono na">—</td>
+          <td class="mono" style="color:var(--green)">2.080–1.998$</td>
+          <td>Wochen</td>
+          <td><span class="conf-dot conf-mid"></span>Mittel</td>
+          <td><span class="src-tag">CWS</span></td>
+        </tr>
+        <tr>
+          <td class="na">4</td>
+          <td><span class="asset-name">SOL</span></td>
+          <td><span class="dir-badge dir-short">▼ SHORT</span><span class="status-chip status-be">BE gesichert</span></td>
+          <td class="mono">Gestrig<br><span style="font-size:10px;color:var(--text-muted)">Shortbereich gelb</span></td>
+          <td class="mono" style="color:var(--yellow)">BE</td>
+          <td class="mono" style="color:var(--green)">~80,25$</td>
+          <td>Wochen</td>
+          <td><span class="conf-dot conf-mid"></span>Mittel</td>
+          <td><span class="src-tag">CWS</span></td>
+        </tr>
+        <tr>
+          <td class="na">5</td>
+          <td><span class="asset-name">Silver</span></td>
+          <td><span class="dir-badge dir-short">▼ SHORT</span><span class="status-chip status-active">aktiv</span></td>
+          <td class="mono">76,94$<br><span style="font-size:10px;color:var(--text-muted)">50er Fib, Sniper Entry</span></td>
+          <td class="mono" style="color:var(--yellow)">BE</td>
+          <td class="mono" style="color:var(--green)">73,89$ / 74,86$</td>
+          <td>Tage–Wochen</td>
+          <td><span class="conf-dot conf-mid"></span>Mittel</td>
+          <td><span class="src-tag">CWS</span></td>
+        </tr>
+        <tr>
+          <td class="na">6</td>
+          <td><span class="asset-name">Öl</span></td>
+          <td><span class="dir-badge dir-long">▲ LONG</span><span class="status-chip status-build">Short Squeeze</span></td>
+          <td class="mono na">—<br><span style="font-size:10px;color:var(--text-muted)">Paper→Physical Konvergenz</span></td>
+          <td class="mono na">—</td>
+          <td class="mono">$130–160+<br><span style="font-size:10px;color:var(--text-muted)">Phys. Preis</span></td>
+          <td>Wochen</td>
+          <td><span class="conf-dot conf-mid"></span>Mittel</td>
+          <td><span class="src-tag">Andrei J.</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TWO COL: MACRO + OIL -->
+  <div class="two-col">
+
+    <!-- MACRO DATA -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🌍 Makro & Marktdaten</div>
+        <div class="card-sub">Stand: 02.05.2026</div>
+      </div>
+      <div class="macro-grid">
+        <div class="macro-item">
+          <div class="m-label">BTC Kurs</div>
+          <div class="m-val m-yellow">~78.700$</div>
+          <div class="m-note m-red">↓ STH-CB = Widerstand</div>
+        </div>
+        <div class="macro-item">
+          <div class="m-label">STH-CB</div>
+          <div class="m-val m-red">78.700$</div>
+          <div class="m-note">⚡ Key Level</div>
+        </div>
+        <div class="macro-item">
+          <div class="m-label">50W EMA</div>
+          <div class="m-val m-red">85.900$</div>
+          <div class="m-note">Bären-Grenze</div>
+        </div>
+        <div class="macro-item">
+          <div class="m-label">Öl (Paper)</div>
+          <div class="m-val m-yellow">~$100</div>
+          <div class="m-note m-orange">Phys: $130–160+</div>
+        </div>
+        <div class="macro-item">
+          <div class="m-label">US 10Y Yield</div>
+          <div class="m-val m-red">4,3%</div>
+          <div class="m-note m-red">Danger: 4,6–4,8%</div>
+        </div>
+        <div class="macro-item">
+          <div class="m-label">S&P 500</div>
+          <div class="m-val m-yellow">ATH-Nähe</div>
+          <div class="m-note m-red">Korrekturrisiko!</div>
+        </div>
+        <div class="macro-item">
+          <div class="m-label">Ölversorgung</div>
+          <div class="m-val m-red">−15–20%</div>
+          <div class="m-note m-orange">Größte Krise ever</div>
+        </div>
+        <div class="macro-item">
+          <div class="m-label">China Bonds</div>
+          <div class="m-val m-green">↓ Yields</div>
+          <div class="m-note m-orange">Neuer Safe Haven?</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OIL CRISIS -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">🛢️ Öl-Krise (Andrei Jikh)</div>
+        <div class="card-sub">Strait of Hormuz geschlossen seit Feb 2026</div>
+      </div>
+      <div class="oil-crisis">
+        <div class="crisis-row">
+          <div class="crisis-icon">📉</div>
+          <div>
+            <div class="crisis-label">Fehlende Versorgung</div>
+            <div class="crisis-val" style="color:var(--red)">8–13 Mio. Barrel/Tag (15–20%)</div>
+            <div class="crisis-sub">Mehr als doppelt so viel wie in 1973 und 1990</div>
+          </div>
+        </div>
+        <div class="crisis-row">
+          <div class="crisis-icon">📊</div>
+          <div>
+            <div class="crisis-label">Historischer Vergleich</div>
+            <div class="crisis-val">1973: −52% Aktien · 1990: −21%</div>
+            <div class="crisis-sub">2026: Markt preist NULL Korrektur ein</div>
+          </div>
+        </div>
+        <div class="crisis-row">
+          <div class="crisis-icon">⏱</div>
+          <div>
+            <div class="crisis-label">JP Morgan Datum</div>
+            <div class="crisis-val" style="color:var(--orange)">~20. April 2026 = Puffer aufgebraucht</div>
+            <div class="crisis-sub">Ab jetzt: Paper-Preis muss zu physisch konvergieren</div>
+          </div>
+        </div>
+        <div class="crisis-row">
+          <div class="crisis-icon">🌾</div>
+          <div>
+            <div class="crisis-label">Nahrungsmittelinflation</div>
+            <div class="crisis-val">Düngerpreise auf Ukraine-Krieg-Niveau</div>
+            <div class="crisis-sub">Trifft Supermärkte: H2 2026 (6–12 Mon. Verzögerung)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WATCHLIST -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">👁 Watchlist & Beobachtungs-Setups</div>
+      <div class="card-sub">Noch nicht ausgelöst</div>
+    </div>
+    <div class="watch-list">
+      <div class="watch-item">
+        <div class="watch-header">
+          <span class="watch-asset">BTC</span>
+          <span class="dir-badge dir-long" style="font-size:10px;padding:2px 7px;">▲ LONG Spot</span>
+        </div>
+        <div class="watch-trigger">Akkumulationszone 59.200–54.000$<br>(Realized Price + LTH-CB 48.000$)</div>
+        <div class="watch-source">Crypto Wall Street</div>
+      </div>
+      <div class="watch-item">
+        <div class="watch-header">
+          <span class="watch-asset">ETH</span>
+          <span class="dir-badge dir-long" style="font-size:10px;padding:2px 7px;">▲ LONG Spot</span>
+        </div>
+        <div class="watch-trigger">1.500$ und 1.200$<br>(2 ETH bei 1.830$ bereits im Bestand)</div>
+        <div class="watch-source">Crypto Wall Street</div>
+      </div>
+      <div class="watch-item">
+        <div class="watch-header">
+          <span class="watch-asset">SOL</span>
+          <span class="dir-badge dir-short" style="font-size:10px;padding:2px 7px;">▼ SHORT</span>
+        </div>
+        <div class="watch-trigger">Re-entry: 618er–667er Level<br>(nach BE-Ausstop)</div>
+        <div class="watch-source">Crypto Wall Street</div>
+      </div>
+      <div class="watch-item">
+        <div class="watch-header">
+          <span class="watch-asset">S&P 500</span>
+          <span class="dir-badge dir-short" style="font-size:10px;padding:2px 7px;">▼ SHORT</span>
+        </div>
+        <div class="watch-trigger">Historisch: −20% bis −52% bei Öl-Schocks. Aktuell: ATH = Blasenrisiko</div>
+        <div class="watch-source">Andrei Jikh</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONSENSUS -->
+  <div class="card" style="margin-bottom:18px;">
+    <div class="card-header"><div class="card-title">🤝 Konsens beider Kanäle</div></div>
+    <div class="consensus-row">
+      <div class="consensus-cell">
+        <div class="cons-asset">BTC kurzfristig</div>
+        <span class="cons-badge" style="background:var(--red-bg);color:var(--red)">🔴 Bearish</span>
+      </div>
+      <div class="consensus-cell">
+        <div class="cons-asset">BTC langfristig</div>
+        <span class="cons-badge" style="background:var(--yellow-bg);color:var(--yellow)">🟡 Geteilt</span>
+      </div>
+      <div class="consensus-cell">
+        <div class="cons-asset">ETH / SOL</div>
+        <span class="cons-badge" style="background:var(--red-bg);color:var(--red)">🔴 Bearish</span>
+      </div>
+      <div class="consensus-cell">
+        <div class="cons-asset">Öl (physisch)</div>
+        <span class="cons-badge" style="background:var(--green-bg);color:var(--green)">🟢 Bullisch</span>
+      </div>
+      <div class="consensus-cell">
+        <div class="cons-asset">Aktien US</div>
+        <span class="cons-badge" style="background:var(--red-bg);color:var(--red)">🔴 Risiko</span>
+      </div>
+      <div class="consensus-cell">
+        <div class="cons-asset">Inflation</div>
+        <span class="cons-badge" style="background:var(--orange-bg);color:var(--orange)">🟠 Steigend</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    <span>⚠️</span>
+    <span>Keine Anlageberatung. Alle Signale spiegeln ausschließlich die Meinungen der analysierten YouTube-Creator (Crypto Wall Street, Andrei Jikh) wider. Transkripte auto-generiert — Zahlen können leicht abweichen. DYOR — Do Your Own Research.</span>
+  </div>
+
+</div>
+
+<div class="footer">
+  Quellen: <a href="https://youtube.com/@cryptowallstreet" target="_blank" rel="noopener">@cryptowallstreet</a> · <a href="https://youtube.com/@AndreiJikh" target="_blank" rel="noopener">@AndreiJikh</a> · Stand: 02. Mai 2026
+</div>
+
+</body>
+</html>

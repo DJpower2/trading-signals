@@ -1,0 +1,177 @@
+<!DOCTYPE html><html lang="de"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Paper Trader — CheatingSignals</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<style>
+:root{--bg:#0f1117;--card:#1a1d27;--border:#2a2d3a;--text:#e2e8f0;--muted:#64748b;--accent:#3b82f6;--green:#22c55e;--red:#ef4444;--yellow:#f59e0b;--radius:12px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.6;}
+a{color:var(--accent);text-decoration:none;}
+nav{background:#0c0e16;border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:0;height:52px;}
+.nav-logo{font-size:15px;font-weight:800;color:white;margin-right:32px;display:flex;align-items:center;gap:8px;}
+.nav-logo span{background:var(--accent);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;}
+.nav-link{padding:16px 14px;font-size:12px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;transition:all .15s;}
+.nav-link:hover,.nav-link.active{color:white;border-bottom-color:var(--accent);text-decoration:none;}
+.main{max-width:1200px;margin:0 auto;padding:24px;}
+.page-title{font-size:20px;font-weight:800;margin-bottom:4px;}
+.page-sub{font-size:12px;color:var(--muted);margin-bottom:24px;}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;}
+.stat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:6px;}
+.stat-val{font-size:22px;font-weight:800;font-family:'SF Mono','Fira Code',monospace;}
+.stat-note{font-size:11px;margin-top:3px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:20px;overflow:hidden;}
+.card-head{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:14px;font-weight:700;}
+.card-sub{font-size:11px;color:var(--muted);}
+table{width:100%;border-collapse:collapse;}
+th{background:#12151f;padding:8px 12px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);border-bottom:1px solid var(--border);}
+td{padding:10px 12px;border-bottom:1px solid #1e2130;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#1e2335;}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;}
+.badge-green{background:#14532d44;color:var(--green);border:1px solid #16a34a44;}
+.badge-red{background:#7f1d1d44;color:var(--red);border:1px solid #ef444444;}
+.badge-yellow{background:#78350f44;color:var(--yellow);border:1px solid #f59e0b44;}
+.mono{font-family:'SF Mono','Fira Code',monospace;font-size:12px;}
+.green{color:var(--green);}.red{color:var(--red);}.yellow{color:var(--yellow);}.muted{color:var(--muted);}
+.reasoning{font-size:11px;color:#94a3b8;line-height:1.5;max-width:320px;}
+.loading{color:var(--muted);padding:20px;text-align:center;font-size:12px;}
+</style>
+</head><body>
+<nav>
+  <div class="nav-logo">📡 CheatingSignals <span>BETA</span></div>
+  <a class="nav-link" href="index.html">Übersicht</a>
+  <a class="nav-link active" href="portfolio.html">Paper Trader</a>
+  <a class="nav-link" href="channels/cws.html">Crypto Wall Street</a>
+  <a class="nav-link" href="channels/andrei-jikh.html">Andrei Jikh</a>
+</nav>
+<div class="main">
+  <div class="page-title">🤖 Paper Trading Agent</div>
+  <div class="page-sub">Autonomer Agent der Signale bewertet und ein virtuelles Portfolio managed · Startkapital: $10.000</div>
+
+  <div class="grid-4">
+    <div class="stat-card">
+      <div class="stat-label">Portfolio Wert</div>
+      <div class="stat-val" id="totalVal" style="color:var(--green)">–</div>
+      <div class="stat-note" id="totalPnl">–</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Cash verfügbar</div>
+      <div class="stat-val" id="cashVal" style="color:var(--accent)">–</div>
+      <div class="stat-note" id="cashPct">–</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Investiert</div>
+      <div class="stat-val" id="invVal" style="color:var(--yellow)">–</div>
+      <div class="stat-note" id="numPos">– Positionen</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Realisierter PnL</div>
+      <div class="stat-val" id="realPnl">$0</div>
+      <div class="stat-note" id="winRate">– abgeschlossen</div>
+    </div>
+  </div>
+
+  <!-- Equity Curve -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">📈 Equity Kurve</div>
+      <div class="card-sub">Tages-Snapshots</div>
+    </div>
+    <div style="padding:16px 20px;height:240px;">
+      <canvas id="equityChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Offene Positionen -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">💼 Offene Positionen</div>
+      <div class="card-sub" id="openCount">–</div>
+    </div>
+    <div id="openTable"><div class="loading">Lade…</div></div>
+  </div>
+
+  <!-- Trade Log -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">📋 Agent-Entscheidungslog</div>
+      <div class="card-sub">Alle Trades mit Begründung</div>
+    </div>
+    <div id="tradeLog"><div class="loading">Lade…</div></div>
+  </div>
+</div>
+<script>
+const SB_URL='https://igydqugndbpkzppntlma.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlneWRxdWduZGJwa3pwcG50bG1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MjIzNjgsImV4cCI6MjA5MzI5ODM2OH0.dS_W9TnhelzQBgGb5z79v4xc7FqUT4ddbDkHUynSXo4';
+async function sb(t,q=''){const r=await fetch(`${SB_URL}/rest/v1/${t}?${q}`,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});return r.json();}
+function fmt(n){if(n==null)return'—';return Number(n).toLocaleString('de-DE',{minimumFractionDigits:0,maximumFractionDigits:2});}
+function dirBadge(d){const c=d==='LONG'?'green':'red';return`<span class="badge badge-${c}">${d==='LONG'?'▲':'▼'} ${d}</span>`;}
+
+async function load(){
+  const [equity,trades,positions,closed]=await Promise.all([
+    sb('equity_snapshots','order=snapshot_date.asc'),
+    sb('trades','status=eq.open&order=entry_date.desc'),
+    sb('positions','select=*'),
+    sb('trades','status=eq.closed&order=exit_date.desc')
+  ]);
+  const latest=equity[equity.length-1]||{total_value:10000,cash:10000,positions_value:0,num_open_trades:0};
+  const pnl=(latest.total_value-10000);
+  const pnlPct=(pnl/100).toFixed(2);
+  document.getElementById('totalVal').textContent='$'+fmt(latest.total_value);
+  document.getElementById('totalPnl').innerHTML=`<span class="${pnl>=0?'green':'red'}">${pnl>=0?'+':''} $${fmt(pnl)} (${pnlPct}%)</span>`;
+  document.getElementById('cashVal').textContent='$'+fmt(latest.cash);
+  document.getElementById('cashPct').textContent=((latest.cash/latest.total_value)*100).toFixed(0)+'% des Portfolios';
+  document.getElementById('invVal').textContent='$'+fmt(latest.positions_value);
+  document.getElementById('numPos').textContent=latest.num_open_trades+' Positionen';
+  const realPnl=closed.reduce((s,t)=>s+(t.pnl_usd||0),0);
+  document.getElementById('realPnl').textContent=(realPnl>=0?'+':'')+' $'+fmt(realPnl);
+  document.getElementById('realPnl').className='stat-val '+(realPnl>=0?'green':'red');
+  document.getElementById('winRate').textContent=closed.length+' abgeschlossen';
+
+  // Equity Chart
+  const ctx=document.getElementById('equityChart').getContext('2d');
+  new Chart(ctx,{type:'line',data:{
+    labels:equity.map(e=>e.snapshot_date),
+    datasets:[
+      {label:'Portfolio',data:equity.map(e=>e.total_value),borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.12)',fill:true,tension:.4,pointRadius:5,pointBackgroundColor:'#3b82f6'},
+      {label:'Baseline $10k',data:equity.map(()=>10000),borderColor:'#334155',borderDash:[4,4],pointRadius:0,fill:false}
+    ]
+  },options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}}},
+    scales:{x:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'#1e2130'}},
+             y:{ticks:{color:'#64748b',font:{size:10},callback:v=>'$'+v.toLocaleString()},grid:{color:'#1e2130'}}}}});
+
+  // Open positions
+  document.getElementById('openCount').textContent=trades.length+' offen';
+  document.getElementById('openTable').innerHTML=trades.length?`<table>
+    <tr><th>Asset</th><th>Richtung</th><th>Entry</th><th>Größe</th><th>SL</th><th>TP</th><th>Eröffnet</th></tr>
+    ${trades.map(t=>{const p=positions.find(x=>x.trade_id===t.id)||{};return`<tr>
+      <td><strong>${t.asset}</strong></td>
+      <td>${dirBadge(t.direction)}</td>
+      <td class="mono">$${fmt(t.entry_price)}</td>
+      <td class="mono yellow">$${fmt(t.size_usd)}</td>
+      <td class="mono red">${p.stoploss?'$'+fmt(p.stoploss):'–'}</td>
+      <td class="mono green">${p.take_profit?'$'+fmt(p.take_profit):'–'}</td>
+      <td class="muted">${t.entry_date?.substring(0,10)||'–'}</td>
+    </tr>`}).join('')}
+  </table>`:'<div class="loading">Keine offenen Positionen</div>';
+
+  // Trade log
+  const allTrades=[...trades,...closed].sort((a,b)=>new Date(b.entry_date)-new Date(a.entry_date));
+  document.getElementById('tradeLog').innerHTML=allTrades.length?`<table>
+    <tr><th>Asset</th><th>Richtung</th><th>Status</th><th>Entry</th><th>PnL</th><th>Agent-Begründung</th></tr>
+    ${allTrades.map(t=>`<tr>
+      <td><strong>${t.asset}</strong></td>
+      <td>${dirBadge(t.direction)}</td>
+      <td><span class="badge ${t.status==='open'?'badge-yellow':'badge-green'}">${t.status==='open'?'Offen':'Geschlossen'}</span></td>
+      <td class="mono">$${fmt(t.entry_price)}</td>
+      <td class="mono ${(t.pnl_usd||0)>=0?'green':'red'}">${t.pnl_usd!=null?(((t.pnl_usd||0)>=0?'+':'')+' $'+fmt(t.pnl_usd)):'–'}</td>
+      <td class="reasoning">${t.agent_reasoning||'–'}</td>
+    </tr>`).join('')}
+  </table>`:'<div class="loading">Noch keine Trades</div>';
+}
+load().catch(console.error);
+</script>
+</body></html>

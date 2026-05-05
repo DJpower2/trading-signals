@@ -30,6 +30,16 @@ th{background:#12151f;padding:8px 12px;text-align:left;font-size:10px;font-weigh
 td{padding:10px 12px;border-bottom:1px solid #1e2130;vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#1e2335;}
+.refresh-btn{background:#1e3a5f;color:#93c5fd;border:1px solid #3b82f644;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;}
+.refresh-btn:hover{background:#2563eb;color:white;}
+.refresh-btn:disabled{opacity:.5;cursor:wait;}
+.refresh-btn .spin{display:inline-block;}
+.refresh-btn.loading .spin{animation:spin 1s linear infinite;}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.live-price{font-family:'SF Mono','Fira Code',monospace;font-size:12px;font-weight:600;}
+.pnl-pos{color:var(--green);font-family:'SF Mono','Fira Code',monospace;font-weight:700;}
+.pnl-neg{color:var(--red);font-family:'SF Mono','Fira Code',monospace;font-weight:700;}
+.price-time{font-size:10px;color:var(--muted);}
 .badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700;}
 .badge-green{background:#14532d44;color:var(--green);border:1px solid #16a34a44;}
 .badge-red{background:#7f1d1d44;color:var(--red);border:1px solid #ef444444;}
@@ -107,8 +117,11 @@ tr:hover td{background:#1e2335;}
     <!-- Offene Positionen -->
     <div class="card">
       <div class="card-head">
-        <div class="card-title">💼 Offene Positionen</div>
-        <a href="portfolio.html" style="font-size:11px;color:var(--accent)">Details →</a>
+        <div class="card-title">💼 Offene Positionen <span class="price-time" id="priceTime" style="margin-left:8px;font-weight:400;"></span></div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="refresh-btn" id="refreshBtn" onclick="refreshPrices()"><span class="spin">↻</span> Preise aktualisieren</button>
+          <a href="portfolio.html" style="font-size:11px;color:var(--accent)">Details →</a>
+        </div>
       </div>
       <div id="positionsTable"><div class="loading">Lade Positionen…</div></div>
     </div>
@@ -141,6 +154,99 @@ const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 async function sb(t,q=''){const r=await fetch(`${SB_URL}/rest/v1/${t}?${q}`,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});return r.json();}
 function fmt(n){if(n==null)return'—';return Number(n).toLocaleString('de-DE',{minimumFractionDigits:0,maximumFractionDigits:2});}
 function dirBadge(d){const c=d==='LONG'?'green':d==='SHORT'?'red':'yellow';return`<span class="badge badge-${c}">${d==='LONG'?'▲':'▼'} ${d}</span>`;}
+
+// Live-Preis-System
+const COIN_MAP={BTC:'bitcoin',ETH:'ethereum',SOL:'solana',TAO:'bittensor',XRP:'ripple',ADA:'cardano',DOGE:'dogecoin',MATIC:'matic-network',LINK:'chainlink',AVAX:'avalanche-2'};
+const METAL_MAP={SILVER:'XAG',GOLD:'XAU',SILBER:'XAG'};
+let LIVE_PRICES={}; // {BTC: 67234.12, SILVER: 31.45, ...}
+
+async function fetchCryptoPrices(assets){
+  const ids=[...new Set(assets.map(a=>COIN_MAP[a.toUpperCase()]).filter(Boolean))];
+  if(!ids.length) return {};
+  try{
+    const r=await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids.join(',')}&vs_currencies=usd`);
+    const data=await r.json();
+    const out={};
+    for(const [sym,id] of Object.entries(COIN_MAP)){
+      if(data[id]?.usd) out[sym]=data[id].usd;
+    }
+    return out;
+  }catch(e){console.error('CoinGecko error:',e);return {};}
+}
+
+async function fetchMetalPrice(metal){
+  try{
+    const r=await fetch(`https://api.gold-api.com/price/${metal}`);
+    const data=await r.json();
+    return data.price;
+  }catch(e){console.error('Metal API error:',e);return null;}
+}
+
+async function fetchAllPrices(assets){
+  const cryptoAssets=assets.filter(a=>COIN_MAP[a.toUpperCase()]);
+  const metalAssets=assets.filter(a=>METAL_MAP[a.toUpperCase()]);
+  const [crypto,...metals]=await Promise.all([
+    fetchCryptoPrices(cryptoAssets),
+    ...metalAssets.map(async a=>{
+      const code=METAL_MAP[a.toUpperCase()];
+      const price=await fetchMetalPrice(code);
+      return {[a.toUpperCase()]:price};
+    })
+  ]);
+  return Object.assign({},crypto,...metals);
+}
+
+function calcPnl(trade,curPrice){
+  if(!curPrice||!trade.entry_price||!trade.size_usd) return null;
+  const diff=trade.direction==='SHORT'?(trade.entry_price-curPrice):(curPrice-trade.entry_price);
+  const pct=(diff/trade.entry_price)*100;
+  const dollar=trade.size_usd*(diff/trade.entry_price);
+  return {pct,dollar};
+}
+
+function renderPositions(trades,positions){
+  const html=`<table>
+    <tr><th>Asset</th><th>Richtung</th><th>Entry</th><th>Aktuell</th><th>P&amp;L</th><th>Größe</th><th>SL</th></tr>
+    ${trades.map(t=>{
+      const cur=LIVE_PRICES[t.asset.toUpperCase()];
+      const pnl=calcPnl(t,cur);
+      const sl=positions.find(p=>p.trade_id===t.id)?.stoploss;
+      let curCell=cur?`<span class="live-price">$${fmt(cur)}</span>`:'<span class="muted">–</span>';
+      let pnlCell='<span class="muted">–</span>';
+      if(pnl){
+        const cls=pnl.dollar>=0?'pnl-pos':'pnl-neg';
+        const sign=pnl.dollar>=0?'+':'';
+        pnlCell=`<span class="${cls}">${sign}$${fmt(pnl.dollar)}<br><span style="font-size:10px;font-weight:500;">${sign}${pnl.pct.toFixed(2)}%</span></span>`;
+      }
+      return `<tr>
+        <td><strong>${t.asset}</strong></td>
+        <td>${dirBadge(t.direction)}</td>
+        <td class="mono">$${fmt(t.entry_price)}</td>
+        <td>${curCell}</td>
+        <td>${pnlCell}</td>
+        <td class="mono yellow">$${fmt(t.size_usd)}</td>
+        <td class="mono red">${sl?'$'+fmt(sl):'–'}</td>
+      </tr>`;
+    }).join('')}
+  </table>`;
+  document.getElementById('positionsTable').innerHTML=html;
+}
+
+let CURRENT_TRADES=[],CURRENT_POSITIONS=[];
+
+async function refreshPrices(){
+  const btn=document.getElementById('refreshBtn');
+  btn.classList.add('loading');btn.disabled=true;
+  try{
+    const assets=CURRENT_TRADES.map(t=>t.asset);
+    LIVE_PRICES=await fetchAllPrices(assets);
+    renderPositions(CURRENT_TRADES,CURRENT_POSITIONS);
+    const now=new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    document.getElementById('priceTime').textContent='Live-Preise: '+now;
+  }finally{
+    btn.classList.remove('loading');btn.disabled=false;
+  }
+}
 
 async function load(){
   const [equity,signals,trades,positions,videos]=await Promise.all([
@@ -194,17 +300,12 @@ async function load(){
     </tr>`).join('')}
   </table>`;
 
-  // Positions table
-  document.getElementById('positionsTable').innerHTML=`<table>
-    <tr><th>Asset</th><th>Richtung</th><th>Entry</th><th>Größe</th><th>SL</th></tr>
-    ${trades.map(t=>`<tr>
-      <td><strong>${t.asset}</strong></td>
-      <td>${dirBadge(t.direction)}</td>
-      <td class="mono">$${fmt(t.entry_price)}</td>
-      <td class="mono yellow">$${fmt(t.size_usd)}</td>
-      <td class="mono red">${positions.find(p=>p.trade_id===t.id)?.stoploss?'$'+fmt(positions.find(p=>p.trade_id===t.id).stoploss):'–'}</td>
-    </tr>`).join('')}
-  </table>`;
+  // Positions table mit Live-Preisen
+  CURRENT_TRADES=trades;
+  CURRENT_POSITIONS=positions;
+  renderPositions(trades,positions); // erstmal ohne Live-Preise rendern
+  // Dann Live-Preise asynchron laden
+  refreshPrices();
 }
 load().catch(e=>console.error(e));
 </script>

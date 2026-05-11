@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="de"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Crypto Wall Street — CheatingSignals</title>
+<title>Garys Economics — CheatingSignals</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
 <style>
 :root{--bg:#0f1117;--card:#1a1d27;--border:#2a2d3a;--text:#e2e8f0;--muted:#64748b;--accent:#3b82f6;--green:#22c55e;--red:#ef4444;--yellow:#f59e0b;--orange:#f97316;--radius:12px;}
@@ -14,7 +14,7 @@ nav{background:#0c0e16;border-bottom:1px solid var(--border);padding:0 24px;disp
 .nav-link:hover,.nav-link.active{color:white;border-bottom-color:var(--accent);text-decoration:none;}
 .main{max-width:1200px;margin:0 auto;padding:24px;}
 .channel-header{display:flex;align-items:center;gap:16px;margin-bottom:24px;}
-.channel-avatar{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#1a2a6c,#b21f1f,#fdbb2d);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.channel-avatar{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
 .channel-info h1{font-size:22px;font-weight:800;margin-bottom:2px;}
 .channel-info .ch-meta{font-size:12px;color:var(--muted);}
 .channel-info .ch-meta a{color:var(--accent);}
@@ -46,20 +46,23 @@ tr:hover td{background:#1e2335;}
 .video-title{font-weight:700;font-size:13px;margin-bottom:4px;}
 .video-date{font-size:11px;color:var(--muted);margin-bottom:8px;}
 .video-summary{font-size:12px;color:#94a3b8;line-height:1.6;margin-bottom:10px;}
+.macro-intro{background:linear-gradient(135deg,#1a1d27 0%,#1e293b 100%);border:1px solid #334155;border-left:4px solid #f59e0b;border-radius:var(--radius);padding:18px 22px;margin-bottom:24px;font-size:13px;line-height:1.75;color:#cbd5e1;}
+.macro-intro-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#f59e0b;margin-bottom:8px;display:block;}
+.bp-toggle{margin-top:8px;font-size:11px;font-weight:600;color:#f59e0b;cursor:pointer;background:none;border:none;padding:0;}
+.bp-toggle:hover{text-decoration:underline;}
+.bp-text{display:none;margin-top:10px;padding:14px 16px;background:#0c0e16;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;font-size:12px;line-height:1.75;color:#cbd5e1;white-space:pre-line;}
+.bp-text.open{display:block;}
 .video-signals{display:flex;gap:6px;flex-wrap:wrap;}
 .sig-chip{background:#12151f;border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;}
 .sig-chip.long{border-color:#16a34a44;color:var(--green);}
 .sig-chip.short{border-color:#ef444444;color:var(--red);}
 .sig-chip.wait{border-color:#f59e0b44;color:var(--yellow);}
 .chart-wrap{padding:16px;height:260px;position:relative;}
-.tone-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin-top:8px;}
-.tone-bull{background:var(--green);}
-.tone-bear{background:var(--red);}
-.tone-neut{background:var(--muted);}
 .hit-ring{display:flex;align-items:center;gap:16px;padding:16px 20px;}
 .ring-chart{width:80px;height:80px;flex-shrink:0;}
 .ring-labels .rl{font-size:11px;display:flex;align-items:center;gap:6px;margin-bottom:4px;}
 .ring-labels .dot{width:9px;height:9px;border-radius:50%;}
+.en-badge{background:#1e3a5f44;color:#60a5fa;border:1px solid #3b82f644;display:inline-block;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700;margin-left:6px;}
 .footer{text-align:center;padding:32px;font-size:11px;color:#334155;border-top:1px solid var(--border);margin-top:12px;}
 .loading{color:var(--muted);padding:20px;text-align:center;font-size:12px;}
 .pulse{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s infinite;}
@@ -70,23 +73,26 @@ tr:hover td{background:#1e2335;}
   <div class="nav-logo">📡 CheatingSignals <span>BETA</span></div>
   <a class="nav-link" href="../index.html">Übersicht</a>
   <a class="nav-link" href="../portfolio.html">Paper Trader</a>
-  <a class="nav-link active" href="cws.html">Crypto Wall Street</a>
+  <a class="nav-link" href="cws.html">Crypto Wall Street</a>
   <a class="nav-link" href="andrei-jikh.html">Andrei Jikh</a>
-  <a class="nav-link" href="garys-economics.html">Garys Economics</a>
+  <a class="nav-link active" href="garys-economics.html">Garys Economics</a>
 </nav>
 <div class="main">
 
   <!-- Channel Header -->
   <div class="channel-header">
-    <div class="channel-avatar">📊</div>
+    <div class="channel-avatar" style="background:linear-gradient(135deg,#7c2d12,#c2410c,#f59e0b);">📊</div>
     <div class="channel-info">
-      <h1>Crypto Wall Street</h1>
+      <h1>Garys Economics <span class="en-badge">EN</span></h1>
       <div class="ch-meta">
-        <span class="pulse"></span>&nbsp;Deutsch · BTC, ETH, Altcoins, Makro &nbsp;·&nbsp;
-        <a href="https://www.youtube.com/@cryptowallstreet" target="_blank">@cryptowallstreet ↗</a>
+        <span class="pulse"></span>&nbsp;Englisch · Makro · Inequality · Wealth Distribution &nbsp;·&nbsp;
+        <a href="https://www.youtube.com/@garyseconomics" target="_blank">@garyseconomics ↗</a>
       </div>
     </div>
   </div>
+
+  <!-- Big Picture Intro (für Makro-Channels) -->
+  <div id="macroIntro" style="display:none"></div>
 
   <!-- Stats -->
   <div class="grid-4">
@@ -145,7 +151,7 @@ tr:hover td{background:#1e2335;}
         </div>
         <div class="hit-ring">
           <canvas class="ring-chart" id="hitChart"></canvas>
-          <div class="ring-labels" id="hitLabels">
+          <div class="ring-labels">
             <div class="rl"><div class="dot" style="background:var(--green)"></div><span id="rlTp">TP getroffen: –</span></div>
             <div class="rl"><div class="dot" style="background:var(--red)"></div><span id="rlSl">SL getroffen: –</span></div>
             <div class="rl"><div class="dot" style="background:var(--muted)"></div><span id="rlOpen">Noch offen: –</span></div>
@@ -173,7 +179,7 @@ tr:hover td{background:#1e2335;}
             <th>Zeitrahmen</th>
             <th>Konfidenz</th>
             <th>Status</th>
-            <th>Video</th>
+            <th>Datum</th>
           </tr>
         </thead>
         <tbody id="allSigBody"><tr><td colspan="9" class="loading">Lade Signale…</td></tr></tbody>
@@ -198,7 +204,7 @@ tr:hover td{background:#1e2335;}
 <script>
 const SB_URL='https://igydqugndbpkzppntlma.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlneWRxdWduZGJwa3pwcG50bG1hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc3MjIzNjgsImV4cCI6MjA5MzI5ODM2OH0.dS_W9TnhelzQBgGb5z79v4xc7FqUT4ddbDkHUynSXo4';
-const CWS_CHANNEL_ID='UC31omHTdJDcFCb_bl6tWArA';
+const AJ_CHANNEL_ID='UC5Ghe5TBQGYIOANuiNW4hDQ';
 
 async function sb(table,query=''){
   const r=await fetch(`${SB_URL}/rest/v1/${table}?${query}`,
@@ -234,22 +240,25 @@ function fmtDate(d){
 }
 
 async function load(){
-  // 1. Channel
-  const channels=await sb('channels','youtube_channel_id=eq.'+CWS_CHANNEL_ID);
+  const channels=await sb('channels','youtube_channel_id=eq.'+AJ_CHANNEL_ID);
   const ch=channels[0];
   if(!ch){document.getElementById('videoList').innerHTML='<div class="loading">Kanal nicht in Datenbank gefunden.</div>';return;}
 
-  // 2. Videos für diesen Kanal
-  const videos=await sb('videos','channel_id=eq.'+ch.id+'&order=published_at.desc');
+  // Macro-Intro anzeigen wenn vorhanden
+  if(ch.is_macro && ch.macro_intro){
+    const intro=document.getElementById('macroIntro');
+    intro.style.display='block';
+    intro.className='macro-intro';
+    intro.innerHTML='<span class="macro-intro-label">🌍 Big Picture · '+ch.name+'</span>'+ch.macro_intro;
+  }
 
-  // 3. Signale für diese Videos
+  const videos=await sb('videos','channel_id=eq.'+ch.id+'&order=published_at.desc');
   const videoIds=videos.map(v=>v.id);
   let signals=[];
   if(videoIds.length>0){
     signals=await sb('signals','video_id=in.('+videoIds.join(',')+')'+'&order=created_at.desc');
   }
 
-  // Stats
   document.getElementById('videoCount').textContent=videos.length;
   if(videos.length>0){
     const oldest=videos[videos.length-1];
@@ -277,7 +286,6 @@ async function load(){
   document.getElementById('rlSl').textContent='SL getroffen: '+slHit;
   document.getElementById('rlOpen').textContent='Noch offen: '+(signals.length-closed);
 
-  // Video list
   const vidMap={};
   videos.forEach(v=>{vidMap[v.id]=v;});
   const sigByVideo={};
@@ -294,26 +302,27 @@ async function load(){
       const cls=d==='LONG'?'long':d==='SHORT'?'short':'wait';
       return `<span class="sig-chip ${cls}">${s.asset||'?'} ${d}</span>`;
     }).join('');
+    const bpId='bp_'+v.id;
+    const bpToggle=v.big_picture?`<button class="bp-toggle" onclick="document.getElementById('${bpId}').classList.toggle('open');this.textContent=document.getElementById('${bpId}').classList.contains('open')?'▾ Big Picture einklappen':'▸ Big Picture lesen'">▸ Big Picture lesen</button><div class="bp-text" id="${bpId}">${v.big_picture}</div>`:'';
     vhtml+=`<div class="video-card">
       <div class="video-title">${v.title||'Video'}</div>
       <div class="video-date">📅 ${fmtDate(v.published_at)} · ${vsigs.length} Signal${vsigs.length!==1?'e':''}</div>
       ${v.summary?`<div class="video-summary">${v.summary}</div>`:''}
       <div class="video-signals">${chips||'<span class="muted" style="font-size:11px">Keine Signale</span>'}</div>
+      ${bpToggle}
     </div>`;
   });
   document.getElementById('videoList').innerHTML=vhtml||'<div class="loading">Keine Videos gefunden.</div>';
 
-  // All signals table
   let tbody='';
   signals.forEach(s=>{
     const v=vidMap[s.video_id];
     const vDate=v?fmtDate(v.published_at):'–';
-    const vTitle=v?(v.title||'').substring(0,30)+'…':'–';
     tbody+=`<tr>
       <td class="mono">${s.asset||'–'}</td>
       <td>${dirBadge(s.direction)}</td>
       <td class="mono">${fmt(s.entry_price)}</td>
-      <td class="mono red">${fmt(s.stoploss)}</td>
+      <td class="mono red">${fmt(s.stop_loss)}</td>
       <td class="mono green">${fmt(s.take_profit)}</td>
       <td>${s.timeframe||'–'}</td>
       <td>${confBadge(s.confidence)}</td>
@@ -323,7 +332,6 @@ async function load(){
   });
   document.getElementById('allSigBody').innerHTML=tbody||'<tr><td colspan="9" class="muted" style="text-align:center;padding:20px">Keine Signale gefunden</td></tr>';
 
-  // Tone chart (bar per video)
   const toneLabels=videos.map(v=>fmtDate(v.published_at));
   const toneLong=videos.map(v=>(sigByVideo[v.id]||[]).filter(s=>s.direction?.toUpperCase()==='LONG').length);
   const toneShort=videos.map(v=>(sigByVideo[v.id]||[]).filter(s=>s.direction?.toUpperCase()==='SHORT').length);
@@ -349,7 +357,6 @@ async function load(){
     }
   });
 
-  // Hit rate donut
   const hitData=closed>0?[tpHit,slHit,signals.length-closed]:[0,0,Math.max(signals.length,1)];
   new Chart(document.getElementById('hitChart'),{
     type:'doughnut',
@@ -364,7 +371,6 @@ async function load(){
     }
   });
 
-  // Asset frequency chart
   const assetFreq={};
   signals.forEach(s=>{if(s.asset){assetFreq[s.asset]=(assetFreq[s.asset]||0)+1;}});
   const assetEntries=Object.entries(assetFreq).sort((a,b)=>b[1]-a[1]).slice(0,8);

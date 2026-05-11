@@ -46,6 +46,12 @@ tr:hover td{background:#1e2335;}
 .video-title{font-weight:700;font-size:13px;margin-bottom:4px;}
 .video-date{font-size:11px;color:var(--muted);margin-bottom:8px;}
 .video-summary{font-size:12px;color:#94a3b8;line-height:1.6;margin-bottom:10px;}
+.macro-intro{background:linear-gradient(135deg,#1a1d27 0%,#1e293b 100%);border:1px solid #334155;border-left:4px solid #f59e0b;border-radius:var(--radius);padding:18px 22px;margin-bottom:24px;font-size:13px;line-height:1.75;color:#cbd5e1;}
+.macro-intro-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#f59e0b;margin-bottom:8px;display:block;}
+.bp-toggle{margin-top:8px;font-size:11px;font-weight:600;color:#f59e0b;cursor:pointer;background:none;border:none;padding:0;}
+.bp-toggle:hover{text-decoration:underline;}
+.bp-text{display:none;margin-top:10px;padding:14px 16px;background:#0c0e16;border-left:3px solid #f59e0b;border-radius:0 6px 6px 0;font-size:12px;line-height:1.75;color:#cbd5e1;white-space:pre-line;}
+.bp-text.open{display:block;}
 .video-signals{display:flex;gap:6px;flex-wrap:wrap;}
 .sig-chip{background:#12151f;border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;}
 .sig-chip.long{border-color:#16a34a44;color:var(--green);}
@@ -69,6 +75,7 @@ tr:hover td{background:#1e2335;}
   <a class="nav-link" href="../portfolio.html">Paper Trader</a>
   <a class="nav-link" href="cws.html">Crypto Wall Street</a>
   <a class="nav-link active" href="andrei-jikh.html">Andrei Jikh</a>
+  <a class="nav-link" href="garys-economics.html">Garys Economics</a>
 </nav>
 <div class="main">
 
@@ -83,6 +90,9 @@ tr:hover td{background:#1e2335;}
       </div>
     </div>
   </div>
+
+  <!-- Big Picture Intro (für Makro-Channels) -->
+  <div id="macroIntro" style="display:none"></div>
 
   <!-- Stats -->
   <div class="grid-4">
@@ -234,6 +244,14 @@ async function load(){
   const ch=channels[0];
   if(!ch){document.getElementById('videoList').innerHTML='<div class="loading">Kanal nicht in Datenbank gefunden.</div>';return;}
 
+  // Macro-Intro anzeigen wenn vorhanden
+  if(ch.is_macro && ch.macro_intro){
+    const intro=document.getElementById('macroIntro');
+    intro.style.display='block';
+    intro.className='macro-intro';
+    intro.innerHTML='<span class="macro-intro-label">🌍 Big Picture · '+ch.name+'</span>'+ch.macro_intro;
+  }
+
   const videos=await sb('videos','channel_id=eq.'+ch.id+'&order=published_at.desc');
   const videoIds=videos.map(v=>v.id);
   let signals=[];
@@ -284,11 +302,14 @@ async function load(){
       const cls=d==='LONG'?'long':d==='SHORT'?'short':'wait';
       return `<span class="sig-chip ${cls}">${s.asset||'?'} ${d}</span>`;
     }).join('');
+    const bpId='bp_'+v.id;
+    const bpToggle=v.big_picture?`<button class="bp-toggle" onclick="document.getElementById('${bpId}').classList.toggle('open');this.textContent=document.getElementById('${bpId}').classList.contains('open')?'▾ Big Picture einklappen':'▸ Big Picture lesen'">▸ Big Picture lesen</button><div class="bp-text" id="${bpId}">${v.big_picture}</div>`:'';
     vhtml+=`<div class="video-card">
       <div class="video-title">${v.title||'Video'}</div>
       <div class="video-date">📅 ${fmtDate(v.published_at)} · ${vsigs.length} Signal${vsigs.length!==1?'e':''}</div>
       ${v.summary?`<div class="video-summary">${v.summary}</div>`:''}
       <div class="video-signals">${chips||'<span class="muted" style="font-size:11px">Keine Signale</span>'}</div>
+      ${bpToggle}
     </div>`;
   });
   document.getElementById('videoList').innerHTML=vhtml||'<div class="loading">Keine Videos gefunden.</div>';

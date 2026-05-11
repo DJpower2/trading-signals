@@ -29,6 +29,7 @@ nav{background:#0c0e16;border-bottom:1px solid var(--border);padding:0 24px;disp
 .ch-avatar{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:white;flex-shrink:0;}
 .av-cws{background:linear-gradient(135deg,#1e3a5f,#3b82f6);}
 .av-aj{background:linear-gradient(135deg,#7c2d12,#ef4444);}
+.av-gary{background:linear-gradient(135deg,#7c2d12,#c2410c,#f59e0b);}
 .ch-info{flex:1;min-width:0;}
 .ch-name{font-weight:700;font-size:15px;line-height:1.2;}
 .ch-handle{font-size:11px;color:var(--muted);margin-top:2px;}
@@ -38,6 +39,16 @@ nav{background:#0c0e16;border-bottom:1px solid var(--border);padding:0 24px;disp
 .sent-neutral{background:#78350f44;color:var(--yellow);border:1px solid #f59e0b66;}
 .sent-macro{background:#7c2d1244;color:var(--orange);border:1px solid #ea580c66;}
 
+.ch-head{cursor:pointer;user-select:none;transition:background .15s;}
+.ch-head:hover{background:#1e2335;}
+.ch-toggle{margin-left:auto;font-size:14px;color:var(--muted);transition:transform .2s;display:inline-block;}
+.ch-card.open .ch-toggle{transform:rotate(90deg);}
+.ch-body{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.ch-card.open .ch-body{max-height:2000px;}
+.ch-tease{padding:10px 18px;font-size:12px;color:#94a3b8;border-top:1px solid #1e2130;display:flex;gap:14px;align-items:center;}
+.ch-tease-stat{display:flex;align-items:center;gap:5px;}
+.ch-tease-stat strong{color:var(--text);font-weight:700;}
+.ch-card.open .ch-tease{display:none;}
 .ch-section{padding:14px 18px;border-bottom:1px solid #1e2130;}
 .ch-section:last-child{border-bottom:none;}
 .ch-section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
@@ -142,6 +153,8 @@ function renderChannelCard(channel,latestVideo,signals){
   const meta=CHANNEL_META[channel.id]||{avatar:'av-cws',icon:'?',displayName:channel.name,handle:channel.handle,detailUrl:'#'};
   const sentiment=latestVideo?.sentiment||'neutral';
   const lastDate=latestVideo?.published_at||'–';
+  const longC=signals.filter(s=>s.direction==='LONG').length;
+  const shortC=signals.filter(s=>s.direction==='SHORT').length;
   const signalRows=signals.slice(0,6).map(s=>`<tr>
     <td class="col-asset">${s.asset}</td>
     <td class="col-dir">${dirBadge(s.direction)}</td>
@@ -149,32 +162,43 @@ function renderChannelCard(channel,latestVideo,signals){
     <td class="col-price green">${s.take_profit?'TP $'+fmt(s.take_profit):'–'}</td>
   </tr>`).join('');
   const more=signals.length>6?`<div style="text-align:right;font-size:11px;color:var(--muted);margin-top:6px;">+${signals.length-6} weitere</div>`:'';
-  return `<div class="ch-card">
-    <div class="ch-head">
+  return `<div class="ch-card" id="card-${channel.id}">
+    <div class="ch-head" onclick="document.getElementById('card-${channel.id}').classList.toggle('open')">
       <div class="ch-avatar ${meta.avatar}">${meta.icon}</div>
       <div class="ch-info">
         <div class="ch-name">${meta.displayName}</div>
-        <div class="ch-handle">${meta.handle} · ${channel.language||'de'}</div>
+        <div class="ch-handle">${meta.handle} · ${channel.language||'de'}${channel.is_macro?' · 🌍 Big Picture':''}</div>
       </div>
       ${sentBadge(sentiment)}
+      <span class="ch-toggle">▸</span>
     </div>
-    <div class="ch-section">
-      <div class="ch-section-label">Letztes Video <span style="text-transform:none;font-weight:500;">${lastDate}</span></div>
-      ${latestVideo?`
-        <div class="video-title">${latestVideo.title}</div>
-        <div class="video-summary">${trunc(latestVideo.summary,260)}</div>
-      `:'<div class="muted">Noch keine Videos analysiert</div>'}
+    <div class="ch-tease">
+      <span class="ch-tease-stat"><strong>${signals.length}</strong> aktive Signale</span>
+      <span style="color:var(--border)">·</span>
+      <span class="ch-tease-stat"><strong style="color:var(--green)">${longC}</strong> Long</span>
+      <span class="ch-tease-stat"><strong style="color:var(--red)">${shortC}</strong> Short</span>
+      <span style="color:var(--border)">·</span>
+      <span class="ch-tease-stat">Letztes Video: <strong>${lastDate}</strong></span>
     </div>
-    <div class="ch-section">
-      <div class="ch-section-label">Aktive Signale <span style="text-transform:none;font-weight:500;">${signals.length} offen</span></div>
-      ${signals.length?`<table class="signals-mini">${signalRows}</table>${more}`:'<div class="muted">Aktuell keine offenen Signale</div>'}
-    </div>
-    <div class="ch-cta">
-      <div class="ch-stats">
-        <span>${signals.filter(s=>s.direction==='LONG').length} Long</span>
-        <span>${signals.filter(s=>s.direction==='SHORT').length} Short</span>
+    <div class="ch-body">
+      <div class="ch-section">
+        <div class="ch-section-label">Letztes Video <span style="text-transform:none;font-weight:500;">${lastDate}</span></div>
+        ${latestVideo?`
+          <div class="video-title">${latestVideo.title}</div>
+          <div class="video-summary">${trunc(latestVideo.summary,260)}</div>
+        `:'<div class="muted">Noch keine Videos analysiert</div>'}
       </div>
-      <a href="${meta.detailUrl}">Alle Videos &amp; Signale →</a>
+      <div class="ch-section">
+        <div class="ch-section-label">Aktive Signale <span style="text-transform:none;font-weight:500;">${signals.length} offen</span></div>
+        ${signals.length?`<table class="signals-mini">${signalRows}</table>${more}`:'<div class="muted">Aktuell keine offenen Signale</div>'}
+      </div>
+      <div class="ch-cta">
+        <div class="ch-stats">
+          <span>${longC} Long</span>
+          <span>${shortC} Short</span>
+        </div>
+        <a href="${meta.detailUrl}">Alle Videos &amp; Signale →</a>
+      </div>
     </div>
   </div>`;
 }
